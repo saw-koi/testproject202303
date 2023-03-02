@@ -6,5 +6,9 @@
     </head>
     <body class="antialiased">
         インデックス
+        <form action="/search">
+            <input type="text" name="q">
+            <input type="submit">
+        </form>
     </body>
 </html>

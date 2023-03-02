@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google_custom_search' => [
+        'api_key' => env('GOOGLE_CUSTOM_SEARCH_API_KEY'),
+        'engine_id' => env('GOOGLE_CUSTOM_SEARCH_ENGINE_ID'),
+        'endpoint' => env('GOOGLE_CUSTOM_SEARCH_ENDPOINT'),
+    ],
+
 ];
