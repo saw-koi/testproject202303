@@ -20,6 +20,8 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         $q = $request->get('q');
+        $page = $request->has('page') ? (int)$request->get('page') : 1;
+        $start = 10*($page-1)+1;
         if(!$q) {
             return view('search', [
                 'msg' => '検索文字列を入力してください',
@@ -33,6 +35,7 @@ class SearchController extends Controller
                 'key' => config('services.google_custom_search.api_key'),
                 'cx' => config('services.google_custom_search.engine_id'),
                 'q' => $q,
+                'start' => $start,
             ]); 
             if( $res->getStatusCode() != 200 ) {
                 return view('search', [
@@ -41,8 +44,18 @@ class SearchController extends Controller
             }
             $resData = $res->json();
             $items = isset($resData["items"]) ? $resData["items"] : [];
+            $prevExists = isset($resData["queries"]["previousPage"]);
+            $nextExists = isset($resData["queries"]["nextPage"]);
             $resultCountStr = $resData["searchInformation"]["formattedTotalResults"];
-            return view('search', compact('q', 'items', 'resultCountStr'));
+            return view('search', compact(
+                'q',
+                'items',
+                'resultCountStr',
+                'start',
+                'page',
+                'prevExists',
+                'nextExists',
+            ));
         }
     }
 }
