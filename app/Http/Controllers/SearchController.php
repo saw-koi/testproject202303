@@ -20,14 +20,29 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         $q = $request->get('q');
-        $res = Http::get(config('services.google_custom_search.endpoint'), [
-            'key' => config('services.google_custom_search.api_key'),
-            'cx' => config('services.google_custom_search.engine_id'),
-            'q' => $q,
-        ]);
-        $resData = $res->json();
-        $items = $resData["items"];
-        $resultCountStr = $resData["searchInformation"]["formattedTotalResults"];
-        return view('search', compact('q', 'items', 'resultCountStr'));
+        if(!$q) {
+            return view('search', [
+                'msg' => '検索文字列を入力してください',
+            ]);
+        } elseif(mb_strlen($q) > 2048) {
+            return view('search', [
+                'msg' => '検索文字列が長すぎます',
+            ]);
+        } else {
+            $res = Http::get(config('services.google_custom_search.endpoint'), [
+                'key' => config('services.google_custom_search.api_key'),
+                'cx' => config('services.google_custom_search.engine_id'),
+                'q' => $q,
+            ]); 
+            if( $res->getStatusCode() != 200 ) {
+                return view('search', [
+                    'msg' => '不明なエラーが発生しました'
+                ]);
+            }
+            $resData = $res->json();
+            $items = isset($resData["items"]) ? $resData["items"] : [];
+            $resultCountStr = $resData["searchInformation"]["formattedTotalResults"];
+            return view('search', compact('q', 'items', 'resultCountStr'));
+        }
     }
 }
