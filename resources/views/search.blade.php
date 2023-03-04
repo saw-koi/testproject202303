@@ -7,10 +7,7 @@
 
     <div id="wrapper" class="w-full">
         <h1><a href="{{ route('index') }}" class="block text-sm text-center">グーグルカスタムサーチAPIをつかってみよう！</a></h1>
-        <form action="/search" class="flex">
-            <input type="text" name="q" value="{{ isset($q) ? $q : "" }}" placeholder="ここに検索文字列を書いてみよう" class="w-3/4 bg-transparent border border-blue-500 focus:border-blue-300">
-            <input type="submit" value="検索" class="w-1/4 bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded">
-        </form>
+        <x-search-form type="search" :q="$q"></x-search-form>
         @if( isset($msg) )
         <p class="block text-center mx-2 my-2 border-2 border-lime-800 bg-lime-100 rounded-full">{{ $msg }}</p>
         @endif
